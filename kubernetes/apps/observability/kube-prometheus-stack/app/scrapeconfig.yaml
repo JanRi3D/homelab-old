@@ -8,10 +8,8 @@ spec:
   staticConfigs:
     - targets:
         - glados.internal:9002
-  metricsPath: /metrics
   relabelings:
-    - action: replace
-      targetLabel: job
+    - targetLabel: job
       replacement: garage
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/scrapeconfig_v1alpha1.json
@@ -23,10 +21,8 @@ spec:
   staticConfigs:
     - targets:
         - glados.internal:9100
-  metricsPath: /metrics
   relabelings:
-    - action: replace
-      targetLabel: job
+    - targetLabel: job
       replacement: node-exporter
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/scrapeconfig_v1alpha1.json
@@ -38,10 +34,8 @@ spec:
   staticConfigs:
     - targets:
         - glados.internal:9633
-  metricsPath: /metrics
   relabelings:
-    - action: replace
-      targetLabel: job
+    - targetLabel: job
       replacement: smartctl-exporter
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/scrapeconfig_v1alpha1.json
@@ -53,8 +47,6 @@ spec:
   staticConfigs:
     - targets:
         - glados.internal:8080
-  metricsPath: /metrics
   relabelings:
-    - action: replace
-      targetLabel: job
+    - targetLabel: job
       replacement: zot
