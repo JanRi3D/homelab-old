@@ -1,0 +1,28 @@
+---
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJob
+metadata:
+  name: homelab
+spec:
+  discoveryFilters:
+    - JanRi3D/homelab
+  extraEnv:
+    - name: LOG_LEVEL
+      value: debug
+    - name: RENOVATE_ONBOARDING
+      value: "false"
+    - name: RENOVATE_PLATFORM_COMMIT
+      value: enabled
+  githubAppReference:
+    secretName: renovate-secret
+    appIdSecretKey: APP_ID
+    installationIdSecretKey: INSTALL_ID
+    pemSecretKey: PEM
+  image: ghcr.io/renovatebot/renovate:44.222.5
+  parallelism: 1
+  provider:
+    name: github
+  resources:
+    requests:
+      cpu: 100m
+  schedule: 0 * * * *
