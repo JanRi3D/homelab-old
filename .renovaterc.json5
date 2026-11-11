@@ -1,0 +1,152 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "github>home-operations/renovate-presets#11.0.0",
+    "github>home-operations/renovate-presets//apps/grafanaDashboards.json5#11.0.0",
+    "github>home-operations/renovate-presets//apps/talosFactory.json5#11.0.0",
+    ":timezone(Europe/Berlin)",
+  ],
+  // Nothing here requires up-to-date branches, and `auto` would still rebase
+  // every automerge PR each time main moves
+  rebaseWhen: "conflicted",
+  packageRules: [
+    // Auto-merge rules
+    // This repository has no status checks, so automerge cannot wait for tests.
+    // Set ignoreTests back to false once a CI workflow runs on pull requests.
+    {
+      description: "Auto-merge trusted OCI digests",
+      matchDatasources: ["docker"],
+      matchUpdateTypes: ["digest"],
+      matchPackageNames: ["/home-operations/"],
+      automerge: true,
+      automergeType: "pr",
+      ignoreTests: true,
+    },
+    {
+      description: "Auto-merge high-cadence OCI packages weekly",
+      matchDatasources: ["docker"],
+      matchUpdateTypes: ["minor", "patch"],
+      matchPackageNames: ["/kube-prometheus-stack/", "ghcr.io/renovatebot/renovate"],
+      automerge: true,
+      automergeType: "pr",
+      ignoreTests: true,
+      schedule: ["before 6am on Monday"],
+    },
+    {
+      description: "Auto-merge GitHub Actions",
+      matchManagers: ["github-actions"],
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      automerge: true,
+      automergeType: "pr",
+      minimumReleaseAge: "3 days",
+      ignoreTests: true,
+    },
+    {
+      description: "Auto-merge trusted GitHub Actions",
+      matchManagers: ["github-actions"],
+      matchPackageNames: ["/^actions\\//"],
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      automerge: true,
+      automergeType: "pr",
+      minimumReleaseAge: "1 minute",
+      ignoreTests: true,
+    },
+    {
+      description: "Auto-merge Grafana dashboards",
+      matchDatasources: ["custom.grafana-dashboards"],
+      matchUpdateTypes: ["major"],
+      automerge: true,
+      automergeType: "pr",
+      ignoreTests: true,
+    },
+    {
+      description: "Auto-merge Renovate Presets",
+      matchManagers: ["renovate-config"],
+      matchUpdateTypes: ["minor", "patch"],
+      automerge: true,
+      automergeType: "pr",
+      ignoreTests: true,
+    },
+    // Grouping rules
+    {
+      description: "Actions Runner Controller Group",
+      groupName: "actions-runner-controller",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/gha-runner-scale-set-controller/", "/gha-runner-scale-set/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
+      description: "Flux Operator Group",
+      groupName: "flux-operator",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/flux-operator/", "/flux-instance/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
+      description: "Kubernetes Group",
+      groupName: "kubernetes",
+      matchDatasources: ["docker"],
+      matchPackageNames: [
+        "/kube-apiserver/",
+        "/kube-controller-manager/",
+        "/kube-proxy/",
+        "/kube-scheduler/",
+        "/kubelet/",
+      ],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 5,
+      separateMinorPatch: true,
+    },
+    {
+      description: "Mise Tools Group",
+      matchManagers: ["mise"],
+      groupName: "mise tools",
+      groupSlug: "mise-tools",
+    },
+    {
+      description: "Rook-Ceph Group",
+      groupName: "rook-ceph",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/rook-ceph/", "/rook-ceph-cluster/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
+      // Unites the factory installer image and the tuppr upgrade version
+      description: "Talos Group",
+      groupName: "talos",
+      matchPackageNames: ["siderolabs/talos"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    // Labeling rules
+    {
+      matchUpdateTypes: ["major"],
+      addLabels: ["type/major"],
+    },
+    {
+      matchUpdateTypes: ["minor"],
+      addLabels: ["type/minor"],
+    },
+    {
+      matchUpdateTypes: ["patch"],
+      addLabels: ["type/patch"],
+    },
+    {
+      matchUpdateTypes: ["digest"],
+      addLabels: ["type/digest"],
+    },
+  ],
+}
